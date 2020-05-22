@@ -2,6 +2,7 @@ from PyQt5.QtWidgets import *
 import sys
 from PyQt5.QtCore import *
 from PyQt5.QtGui import *
+from util import *
 
 class App(QWidget):
     def __init__(self):
@@ -28,12 +29,14 @@ class App(QWidget):
         runbutton.setFixedWidth(100)
 
         self.createHorizontalTextbox()
+        self.createHorizontalResultTitlebox()
         self.createHorizontalResultbox()
 
         windowLayout.addWidget(titlelabel)
         windowLayout.addWidget(self.horizontalGroupBox1)
         windowLayout.addWidget(runbutton,alignment=Qt.AlignCenter)
         windowLayout.addWidget(self.horizontalGroupBox2)
+        windowLayout.addWidget(self.horizontalGroupBox3)
         self.setLayout(windowLayout)
         self.show()
     
@@ -59,10 +62,22 @@ class App(QWidget):
 
         self.horizontalGroupBox1.setLayout(layout)
 
-    def createHorizontalResultbox(self):
+    def createHorizontalResultTitlebox(self):
         self.horizontalGroupBox2 = QGroupBox()
         layout = QHBoxLayout()
-        
+
+        self.message_result_label = QLabel('メッセージ数ランキング',self)
+        self.reaction_result_label = QLabel('スタンプ数ランキング',self)
+
+        layout.addWidget(self.message_result_label)
+        layout.addWidget(self.reaction_result_label)
+
+        self.horizontalGroupBox2.setLayout(layout)     
+
+    def createHorizontalResultbox(self):
+        self.horizontalGroupBox3 = QGroupBox()
+        layout = QHBoxLayout()
+
         self.message_result_label = QLabel('\n'.join(map(str,range(1,10))),self)
         self.message_result_label.setTextInteractionFlags(Qt.TextSelectableByMouse)
         self.reaction_result_label = QLabel('\n'.join(map(str,range(1,10))),self)
@@ -71,18 +86,14 @@ class App(QWidget):
         layout.addWidget(self.message_result_label)
         layout.addWidget(self.reaction_result_label)
 
-        self.horizontalGroupBox2.setLayout(layout)
-
-
-    @pyqtSlot()
-    def on_click(self):
-        print("PyQt5 button click")
+        self.horizontalGroupBox3.setLayout(layout)
 
     @pyqtSlot()
     def didTapRunButton(self):
         print('didtap')
 
 if __name__ == '__main__':
+    fetch_history()
     app = QApplication(sys.argv)
     ew = App()    
     sys.exit(app.exec_())
