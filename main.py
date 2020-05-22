@@ -3,6 +3,7 @@ import sys
 from PyQt5.QtCore import *
 from PyQt5.QtGui import *
 from util import *
+import datetime 
 
 class App(QWidget):
     def __init__(self):
@@ -32,11 +33,11 @@ class App(QWidget):
         self.createHorizontalResultTitlebox()
         self.createHorizontalResultbox()
 
-        windowLayout.addWidget(titlelabel)
-        windowLayout.addWidget(self.horizontalGroupBox1)
-        windowLayout.addWidget(runbutton,alignment=Qt.AlignCenter)
-        windowLayout.addWidget(self.horizontalGroupBox2)
-        windowLayout.addWidget(self.horizontalGroupBox3)
+        windowLayout.addWidget(titlelabel,stretch = 1)
+        windowLayout.addWidget(self.horizontalGroupBox1,stretch = 1)
+        windowLayout.addWidget(runbutton,alignment=Qt.AlignCenter,stretch = 1)
+        windowLayout.addWidget(self.horizontalGroupBox2,stretch = 1)
+        windowLayout.addWidget(self.horizontalGroupBox3,stretch = 5)
         self.setLayout(windowLayout)
         self.show()
     
@@ -81,7 +82,7 @@ class App(QWidget):
         self.message_result_label = QLabel('\n'.join(map(str,range(1,10))),self)
         self.message_result_label.setTextInteractionFlags(Qt.TextSelectableByMouse)
         self.reaction_result_label = QLabel('\n'.join(map(str,range(1,10))),self)
-        self.message_result_label.setTextInteractionFlags(Qt.TextSelectableByMouse)
+        self.reaction_result_label.setTextInteractionFlags(Qt.TextSelectableByMouse)
 
         layout.addWidget(self.message_result_label)
         layout.addWidget(self.reaction_result_label)
@@ -90,10 +91,28 @@ class App(QWidget):
 
     @pyqtSlot()
     def didTapRunButton(self):
-        print('didtap')
+        dt_latest = datetime.datetime.strptime(self.endtime_textbox.text(),timeformat)
+        dt_oldest = datetime.datetime.strptime(self.starttime_textbox.text(),timeformat)
+        
+        message_counts,reaction_counts = fetch_history(dt_latest=dt_latest,dt_oldest=dt_oldest)
+        message_counts = sorted(message_counts.items(),key=lambda x: -x[1])
+        reaction_counts = sorted(reaction_counts.items(),key=lambda x: -x[1])
+
+        m_ranking_texts = []
+        r_ranking_texts = []
+
+        for userid, value in message_counts[:MAX_RANKING]:
+            user = convert_userid_to_username(userid)
+            m_ranking_texts.append(f"{user} : {value} 回")
+
+        for userid, value in message_counts[:MAX_RANKING]:
+            user = convert_userid_to_username(userid)
+            r_ranking_texts.append(f"{user} : {value} 回")
+        
+        self.message_result_label.setText('\n'.join(m_ranking_texts))
+        self.reaction_result_label.setText('\n'.join(r_ranking_texts))
 
 if __name__ == '__main__':
-    fetch_history()
     app = QApplication(sys.argv)
     ew = App()    
     sys.exit(app.exec_())

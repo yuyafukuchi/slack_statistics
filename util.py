@@ -17,24 +17,15 @@ basicConfig(level=INFO)
 config_ini = configparser.ConfigParser()
 config_ini.read('config.ini', encoding='utf-8')
 
-
 # --------------------------------------------------
 # グローバル変数の定義
 # --------------------------------------------------
 SLACK_CHANNEL_NAMES = ['general','random']
 TOKEN = config_ini['Auth']['TOKEN']
 MAX_MESSAGE = 500 #between 1 and 1000
-MESSAGE_RANKING_SAVEPATH = './message_ranking.csv'
-REACTION_RANKING_SAVEPATH = './reaction_ranking.csv'
+MAX_RANKING = 10
 
-oldest = '2020-04-01'
-latest = '2020-05-01'
 timeformat = "%Y-%m-%d"
-dt_oldest = datetime.datetime.strptime(oldest,timeformat)
-dt_latest = datetime.datetime.strptime(latest,timeformat)
-
-message_counts = defaultdict(int)
-reaction_counts = defaultdict(int)
 client = WebClient(TOKEN)
 
 def convert_userid_to_username(userid):
@@ -60,10 +51,12 @@ def convert_channel_names_to_ids():
     else:
         logger.error(channels_list['error'])
 
-def fetch_history():
+def fetch_history(dt_latest,dt_oldest):
     SLACK_CHANNEL_IDS = convert_channel_names_to_ids()
-    logger.info(f'fetching messages from {oldest} to {latest}')
+    message_counts = defaultdict(int)
+    reaction_counts = defaultdict(int)
 
+    logger.info(f'fetching messages from {dt_oldest.strftime(timeformat)} to {dt_latest.strftime(timeformat)}')
 
     for channel_id,channel_name in SLACK_CHANNEL_IDS.items():
         logger.info(f'fetching messages from {channel_name}')
@@ -88,22 +81,5 @@ def fetch_history():
             for r in  message['reactions']:
                 for user in r['users']:
                     reaction_counts[user] += 1
-
-def write_csvs(m_counts,r_counts):
-    with open(MESSAGE_RANKING_SAVEPATH,'w') as f:
-        writer = csv.writer(f)
-        writer.writerow(f"{dt_oldest}-{dt_latest}の期間でメッセージ数が多いユーザランキング")
-        writer.writerows(m_counts)
-
-
-
-
-if __name__ == '__main__':
-    fetch_history()
-    message_counts = sorted(message_counts.items(),key=lambda x: -x[1])
-    reaction_counts = sorted(reaction_counts.items(),key=lambda x: -x[1])
-
-    write_csvs(message_counts,reaction_counts)
-
-    # for userid,count in reaction_counts.items():
-    #     print(convert_userid_to_username(userid),count)
+    
+    return message_counts,reaction_counts
