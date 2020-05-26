@@ -93,6 +93,8 @@ class App(QWidget):
     def didTapRunButton(self):
         dt_latest = datetime.datetime.strptime(self.endtime_textbox.text(),TIMEFORMAT)
         dt_oldest = datetime.datetime.strptime(self.starttime_textbox.text(),TIMEFORMAT)
+        if dt_latest < dt_oldest:
+            raise Exception('oldest day should be older than latest day')
         
         message_counts,reaction_counts = fetch_historys(dt_latest=dt_latest,dt_oldest=dt_oldest)
         message_counts = sorted(message_counts.items(),key=lambda x: -x[1])

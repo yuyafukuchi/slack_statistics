@@ -1,6 +1,4 @@
-import json
 import datetime
-import requests
 import configparser
 from slack import WebClient
 from collections import defaultdict
@@ -23,8 +21,9 @@ config_ini.read('config.ini', encoding='utf-8')
 # --------------------------------------------------
 SLACK_CHANNEL_NAMES = config_ini['Config']['TARGET_CHANNELS'].split(',')
 TOKEN = config_ini['Auth']['TOKEN']
-MAX_MESSAGE = 20 #between 1 and 1000
 MAX_RANKING = int(config_ini['Config']['MAX_RANKING'])
+
+MAX_MESSAGE = 100 #between 1 and 1000
 TIMEFORMAT = "%Y-%m-%d"
 
 client = WebClient(TOKEN)
