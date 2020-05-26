@@ -46,6 +46,7 @@ python main.py
 ```
 
 すると以下のようなWindowが出てきます
+<img width="638" alt="スクリーンショット 2020-05-22 22 41 48" src="https://user-images.githubusercontent.com/36098400/82908721-5606e700-9fa3-11ea-9c5c-42a3ba5553fb.png">
 
 oldestday - latestdayの範囲のランキングを表示します
 
