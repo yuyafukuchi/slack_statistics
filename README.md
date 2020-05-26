@@ -1,9 +1,11 @@
 # slack_statistics
 
 あるワークスペースのいろいろなChannelにおけるランキングを取得できます。
+
 ランキングは現状
 - 発言数ランキング
 - リアクション数ランキング
+
 があります
 
 ## 準備
@@ -16,7 +18,7 @@ https://api.slack.com/apps からランキングを取得したいワークス�
 
 2. スコープの設定
    
-スコープの設定をします。`channels:history`,`channels:read`,`users:read`の三つのスコープを追加します。
+スコープの設定をします。`channels:history`,`channels:read`,`users:profile:read`の三つのスコープを追加します。
 
 3. Slackにアプリをインストール
 
@@ -26,9 +28,10 @@ https://api.slack.com/apps からランキングを取得したいワークス�
 
 本プロジェクトの`config.ini`にトークンを記述します。
 
+`config.ini`ではトークンの他にターゲットのチャンネルや何位までランキングするかを設定することができます
 
 ## requirements
-python 3.6.0+
+python 3.7.0+
 
 ## Install
 ```
