@@ -79,9 +79,9 @@ class App(QWidget):
         self.horizontalGroupBox3 = QGroupBox()
         layout = QHBoxLayout()
 
-        self.message_result_label = QLabel('\n'.join(map(str,range(1,10))),self)
+        self.message_result_label = QLabel('',self)
         self.message_result_label.setTextInteractionFlags(Qt.TextSelectableByMouse)
-        self.reaction_result_label = QLabel('\n'.join(map(str,range(1,10))),self)
+        self.reaction_result_label = QLabel('',self)
         self.reaction_result_label.setTextInteractionFlags(Qt.TextSelectableByMouse)
 
         layout.addWidget(self.message_result_label)
